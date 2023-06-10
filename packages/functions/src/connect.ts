@@ -1,19 +1,20 @@
 import { DynamoDB } from "aws-sdk";
-import { Table } from "sst/node/table";
 
 const dynamoDb = new DynamoDB.DocumentClient();
 
 import { APIGatewayProxyHandler } from "aws-lambda";
+import {ChatApp} from "@chat-sst-app/core/database/schema";
 
 export const main: APIGatewayProxyHandler = async (event) => {
-    const params = {
-        TableName: Table.Connections.tableName,
-        Item: {
-            id: event.requestContext.connectionId,
-        },
-    };
+    const connectionId = event.requestContext.connectionId;
+    console.log(`Connection id: ${event.requestContext.connectionId}`);
+    if(!connectionId){
+        return {statusCode: 400, body:"Bad request" };
+    }
+    const chatConnection = await ChatApp.entities.chatConnection.create({
+        id: connectionId
+    })
+        .go();
 
-    await dynamoDb.put(params).promise();
-
-    return { statusCode: 200, body: "Connected" };
+    return { statusCode: 200, body: JSON.stringify(chatConnection.data) };
 };
