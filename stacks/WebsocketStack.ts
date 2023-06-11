@@ -16,6 +16,7 @@ export function WebsocketStack({ stack }: StackContext) {
             $disconnect: "packages/functions/src/disconnect.main",
             sendmessage: "packages/functions/src/sendMessage.main",
         },
+
     });
 
     // Show the API endpoint in the output
