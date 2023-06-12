@@ -20,6 +20,7 @@ export const main: APIGatewayProxyHandler = async (event) => {
     const postToConnection = async function (connection: ChatConnection) {
         try {
             // Send the message to the given client
+            console.log(`data: ${messageData}`);
             await apiGateway
                 .postToConnection({ ConnectionId: connection.id, Data: messageData })
                 .promise();
