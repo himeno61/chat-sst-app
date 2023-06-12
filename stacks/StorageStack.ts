@@ -3,7 +3,7 @@ import { RemovalPolicy } from "aws-cdk-lib";
 
 export function StorageStack({ stack }: StackContext) {
     // Create the table
-    const database = new Table(stack, "StorageTableV2", {
+    const database = new Table(stack, "StorageTable", {
         fields: {
             pk: "string",
             sk: "string",
