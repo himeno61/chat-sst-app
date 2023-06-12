@@ -23,4 +23,8 @@ export function WebsocketStack({ stack }: StackContext) {
     stack.addOutputs({
         WebsocketApiEndpoint: webSocketApi.url,
     });
+
+    return {
+        webSocketApi
+    }
 }

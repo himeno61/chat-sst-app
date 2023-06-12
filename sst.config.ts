@@ -1,6 +1,7 @@
 import { SSTConfig } from "sst";
 import {WebsocketStack} from "./stacks/WebsocketStack";
 import {StorageStack} from "./stacks/StorageStack";
+import FrontendStack from "./stacks/FrontendStack";
 
 export default {
   config(_input) {
@@ -10,6 +11,6 @@ export default {
     };
   },
   stacks(app) {
-    app.stack(StorageStack).stack(WebsocketStack);
+    app.stack(StorageStack).stack(WebsocketStack).stack(FrontendStack);
   }
 } satisfies SSTConfig;

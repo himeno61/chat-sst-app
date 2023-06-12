@@ -9,7 +9,7 @@ const ChatPage = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const userName = location.state.userName;
-    const ws = new WebSocket("wss://ouk6ztr8i7.execute-api.us-east-1.amazonaws.com/lukasz");
+    const ws = new WebSocket(import.meta.env.VITE_APP_WSS_URL);
     const [messages, setMessages] = useState<WebsocketMessage[]>([]);
     const [isConnected, setIsConnected] = useState(false);
 
