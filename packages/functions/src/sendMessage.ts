@@ -10,17 +10,19 @@ export const main: APIGatewayProxyHandler = async (event) => {
     const { stage, domainName } = event.requestContext;
 
     // Get all the connections
-    const newVar = await ChatApp.entities.chatConnection.find({}).go();
-
+    const chatConnections = await ChatApp.entities.chatConnection.find({}).go();
 
     const apiGateway = new ApiGatewayManagementApi({
         endpoint: `${domainName}/${stage}`,
     });
+    console.log(`data: ${messageData}`);
+
+    ChatApp.entities.message.create({});
+
 
     const postToConnection = async function (connection: ChatConnection) {
         try {
             // Send the message to the given client
-            console.log(`data: ${messageData}`);
             await apiGateway
                 .postToConnection({ ConnectionId: connection.id, Data: messageData })
                 .promise();
@@ -32,8 +34,8 @@ export const main: APIGatewayProxyHandler = async (event) => {
         }
     };
 
-    if(newVar.data){
-        await Promise.all(newVar.data.map(postToConnection));
+    if(chatConnections.data){
+        await Promise.all(chatConnections.data.map(postToConnection));
     }
 
     return { statusCode: 200, body: "Message sent" };

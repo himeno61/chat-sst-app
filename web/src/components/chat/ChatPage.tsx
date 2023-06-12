@@ -30,7 +30,10 @@ const ChatPage = () => {
             if (message.data) {
                 const websocketMessage = JSON.parse(message.data) as WebsocketMessage;
                 console.log(`Received message: ${message.data}`);
-                if (messages.find(wsMessage => wsMessage.id === websocketMessage.id)!==undefined) {
+                const findResult = messages.find(wsMessage => wsMessage.id === websocketMessage.id);
+                const ids = messages.map(m=> m.id);
+                console.log(`ids of messages: ${ids}`)
+                if (findResult) {
                     console.log(`Item with id: ${websocketMessage.id} already in the table`);
                     return;
                 }
@@ -50,7 +53,7 @@ const ChatPage = () => {
                 ws.close();
             }
         };
-    }, []);
+    }, [ws]);
 
     useEffect(()=>{
         console.log("state changed");
@@ -68,8 +71,8 @@ const ChatPage = () => {
             userName: username,
             message: message
         }
-        console.log(`message before being send: ${websocketMessage}`);
-        setMessages(messages.concat(new Array(websocketMessage)));
+        console.log(`message before being send: ${JSON.stringify(websocketMessage)}`);
+        setMessages(messages.concat([websocketMessage]));
         ws.send(getParsedMessage(websocketMessage));
     }
 

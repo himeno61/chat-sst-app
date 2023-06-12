@@ -6,13 +6,13 @@ interface ChatFooterProps {
 
 const ChatFooter = (props: ChatFooterProps) => {
     const {sendMessage} = props;
-    const [message,setMessage] = useState<string|undefined>(undefined);
+    const [message,setMessage] = useState<string>("");
 
     const onSendButtonClick = () => {
         console.log(`message on click: ${message}`)
         if(message && message.length>0) {
             sendMessage(message);
-            setMessage("xxx");
+            setMessage("");
         }
     };
 

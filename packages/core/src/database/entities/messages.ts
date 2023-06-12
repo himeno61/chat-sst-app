@@ -1,9 +1,6 @@
 import { Entity, EntityItem } from "electrodb";
 import { v4 as uuidv4 } from "uuid";
 
-export const Direction = ["inbound", "outbound"] as const;
-export type Direction = typeof Direction[number];
-
 export const Message = new Entity({
     model: {
         entity: "Message",
@@ -18,11 +15,6 @@ export const Message = new Entity({
         },
         message: {
             type: "string",
-            required: true,
-            readOnly: true,
-        },
-        direction: {
-            type: Direction,
             required: true,
             readOnly: true,
         },
@@ -69,7 +61,7 @@ export const Message = new Entity({
             },
             sk: {
                 field: "gsi1sk",
-                composite: ["direction", "createdAtInternal"],
+                composite: ["createdAtInternal"],
                 casing: "none",
             },
         },

@@ -11,7 +11,7 @@ const ChatMessage = (props: ChatMessageProps) => {
     const isOwnMessage = message.userName === username;
 
     return (
-        <div id={message.id} className={"chat-message"}>
+        <div id={message.id} className={isOwnMessage? "chat-message-sender": "chat-message-recipient"}>
             <p>{isOwnMessage ? "You" : message.userName}</p>
             <p>{message.message}</p>
         </div>

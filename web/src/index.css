@@ -111,7 +111,21 @@ input:hover {
 }
 
 .chat-message {
+  width: 60%;
+  border-radius: 8px;
+}
+
+.chat-message-sender {
+  composes: chat-message;
   background-color: #0d8d8d;
+  margin-left: auto;
+  width: 60%;
+  border-radius: 8px;
+}
+
+.chat-message-recipient {
+  composes: chat-message;
+  background-color: #ada104;
   width: 60%;
   border-radius: 8px;
 }
