@@ -29,7 +29,10 @@ const ChatPage = () => {
             if (message.data) {
                 console.log(message.data);
                 const websocketMessage = JSON.parse(message.data) as WebsocketMessage;
-                if (!messages.find(message => message.id === websocketMessage.id)) {
+                if (messages.find(message => message.id === websocketMessage.id)) {
+                    return;
+                }
+                else {
                     setMessages([...messages, websocketMessage]);
                 }
             }

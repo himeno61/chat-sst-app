@@ -14,17 +14,19 @@ const Home = () => {
     return (
         <div>
             <h2>Provide your name to enter the chat</h2>
-            <form onSubmit={handleSubmit}>
-                <label>Username</label>
-                <input type="text"
-                       minLength={6}
-                       name="username"
-                       id='username'
-                       value={userName}
-                       onChange={e => setUserName(e.target.value)}
-                />
-                <button>Sign in</button>
-            </form>
+            <div className="form-field">
+                <form onSubmit={handleSubmit}>
+                    <label htmlFor={"username"}>Username</label>
+                    <input type="text"
+                           minLength={6}
+                           name="username"
+                           id='username'
+                           value={userName}
+                           onChange={e => setUserName(e.target.value)}
+                    />
+                    <button>Sign in</button>
+                </form>
+            </div>
         </div>
     )
 };

@@ -10,7 +10,7 @@ const ChatMessages = (props: ChatMessagesProps) => {
         <>
             <div className={"chat-messages-box"}>
                 {messages.map((message) =>
-                    <div id={message.id} style={{  width: "100%", height: "100vh"}}>
+                    <div id={message.id} className={"chat-message"}>
                         <p>{message.userName}</p>
                         <p>{message.message}</p>
                     </div>

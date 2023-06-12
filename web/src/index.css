@@ -48,6 +48,20 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.form-field {
+  display: grid;
+  gap: 4px;
+}
+
+.form-field label{
+  grid-row: 1;
+  margin-right: 8px;
+}
+
+.form-field input{
+  outline: unset;
+}
+
 input {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -89,7 +103,15 @@ input:hover {
 
 .chat-messages-box {
   width: 100%;
-  height: 100vh;
-  display: flex;
-  align-items: center;
+  height: 60vh;
+  background-color: #8d8d8d;
+  border-radius: 8px;
+  padding: 20px;
+  overflow-y: scroll;
+}
+
+.chat-message {
+  background-color: #0d8d8d;
+  width: 60%;
+  border-radius: 8px;
 }
