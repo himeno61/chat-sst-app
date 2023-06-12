@@ -1,5 +1,5 @@
 import {useLocation, useNavigate} from "react-router-dom";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {getParsedMessage, WebsocketMessage} from "@chat-sst-app/core/src/messages/message.ts";
 import ChatMessages from "./ChatMessages.tsx";
 import {v4 as uuidv4} from "uuid";
@@ -14,6 +14,7 @@ const ChatPage = () => {
     const ws = new WebSocket(import.meta.env.VITE_APP_WSS_URL);
     const [messages, setMessages] = useState<WebsocketMessage[]>([]);
     const [isConnected, setIsConnected] = useState(false);
+    const lastElementRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (!location.state || username === "") {
@@ -27,13 +28,15 @@ const ChatPage = () => {
 
         ws.onmessage = (message) => {
             if (message.data) {
-                console.log(message.data);
                 const websocketMessage = JSON.parse(message.data) as WebsocketMessage;
-                if (messages.find(message => message.id === websocketMessage.id)) {
+                console.log(`Received message: ${message.data}`);
+                if (messages.find(wsMessage => wsMessage.id === websocketMessage.id)!==undefined) {
+                    console.log(`Item with id: ${websocketMessage.id} already in the table`);
                     return;
                 }
                 else {
-                    setMessages(messages.concat(websocketMessage));
+                    console.log("else");
+                    setMessages(messages.concat([websocketMessage]));
                 }
             }
         }
@@ -65,8 +68,9 @@ const ChatPage = () => {
             userName: username,
             message: message
         }
+        console.log(`message before being send: ${websocketMessage}`);
+        setMessages(messages.concat(new Array(websocketMessage)));
         ws.send(getParsedMessage(websocketMessage));
-        setMessages(messages.concat(websocketMessage));
     }
 
     if (!isConnected) {
@@ -77,7 +81,7 @@ const ChatPage = () => {
         return (
             <div className="chat">
                 <ChatTopBar username={username} disconnect={disconnect}/>
-                <ChatMessages messages={messages} username={username}/>
+                <ChatMessages messages={messages} username={username} lastMessageRef={lastElementRef}/>
                 <ChatFooter sendMessage={sendData}/>
             </div>);
     }

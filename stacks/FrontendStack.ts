@@ -16,7 +16,7 @@ const FrontendStack =  ({ stack }: StackContext) => {
     });
 
     stack.addOutputs({
-        SiteUrl: site.url
+        SiteUrl: site.url || site.customDomainUrl
     });
 
 }

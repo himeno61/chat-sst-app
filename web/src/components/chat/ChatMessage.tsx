@@ -6,12 +6,14 @@ interface ChatMessageProps {
 }
 
 const ChatMessage = (props: ChatMessageProps) => {
-    const  {username, message} = props;
+    const {username, message} = props;
+
+    const isOwnMessage = message.userName === username;
 
     return (
         <div id={message.id} className={"chat-message"}>
-        <p>{message.userName ===username? "You": message.userName }</p>
-        <p>{message.message}</p>
+            <p>{isOwnMessage ? "You" : message.userName}</p>
+            <p>{message.message}</p>
         </div>
     );
 }

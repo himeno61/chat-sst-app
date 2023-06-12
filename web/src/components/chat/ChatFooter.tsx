@@ -7,6 +7,15 @@ interface ChatFooterProps {
 const ChatFooter = (props: ChatFooterProps) => {
     const {sendMessage} = props;
     const [message,setMessage] = useState<string|undefined>(undefined);
+
+    const onSendButtonClick = () => {
+        console.log(`message on click: ${message}`)
+        if(message && message.length>0) {
+            sendMessage(message);
+            setMessage("xxx");
+        }
+    };
+
     return (
         <div className={"chat-footer"}>
             <input type="text"
@@ -16,12 +25,7 @@ const ChatFooter = (props: ChatFooterProps) => {
                    value={message}
                    onChange={e => setMessage(e.target.value)}
             />
-            <button onClick={()=> {
-                if(message && message.length>0) {
-                    sendMessage(message);
-                    setMessage(undefined);
-                }
-            }}>Send data</button>
+            <button onClick={onSendButtonClick}> Send data</button>
         </div>
     );
 };
