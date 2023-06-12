@@ -12,18 +12,20 @@ const Home = () => {
         });
     }
     return (
-        <form onSubmit={handleSubmit}>
+        <div>
             <h2>Provide your name to enter the chat</h2>
-            <label>Username</label>
-            <input type="text"
-                   minLength={6}
-                   name="username"
-                   id='username'
-                   value={userName}
-                   onChange={e => setUserName(e.target.value)}
-            />
-            <button>Sign in</button>
-        </form>
+            <form onSubmit={handleSubmit}>
+                <label>Username</label>
+                <input type="text"
+                       minLength={6}
+                       name="username"
+                       id='username'
+                       value={userName}
+                       onChange={e => setUserName(e.target.value)}
+                />
+                <button>Sign in</button>
+            </form>
+        </div>
     )
 };
 
