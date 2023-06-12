@@ -5,6 +5,6 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 export const Client = new DynamoDBClient({});
 
 export const Configuration: EntityConfiguration = {
-    table: Table.StorageTableV2.tableName,
+    table: Table.StorageTable.tableName,
     client: Client,
 };

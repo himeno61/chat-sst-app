@@ -17,8 +17,12 @@ export const main: APIGatewayProxyHandler = async (event) => {
     });
     console.log(`data: ${messageData}`);
 
-    ChatApp.entities.message.create({});
-
+    //
+    // const messagesCreateResult = await ChatApp.entities.message.create({
+    //     id: messageData.id,
+    //     senderId: messageData.userName,
+    //     message: messageData.message
+    // }).go();
 
     const postToConnection = async function (connection: ChatConnection) {
         try {

@@ -1,5 +1,4 @@
 import { Entity, EntityItem } from "electrodb";
-import { v4 as uuidv4 } from "uuid";
 
 export const Message = new Entity({
     model: {
@@ -10,7 +9,6 @@ export const Message = new Entity({
     attributes: {
         id: {
             type: "string",
-            default: () => uuidv4(),
             readOnly: true,
         },
         message: {
