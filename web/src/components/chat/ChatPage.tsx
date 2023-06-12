@@ -33,7 +33,7 @@ const ChatPage = () => {
                     return;
                 }
                 else {
-                    setMessages([...messages, websocketMessage]);
+                    setMessages(messages.concat(websocketMessage));
                 }
             }
         }
@@ -49,6 +49,10 @@ const ChatPage = () => {
         };
     }, []);
 
+    useEffect(()=>{
+        console.log("state changed");
+    },[ws.readyState]);
+
 
     function disconnect() {
         ws.close();
@@ -62,7 +66,7 @@ const ChatPage = () => {
             message: message
         }
         ws.send(getParsedMessage(websocketMessage));
-        setMessages([...messages, websocketMessage]);
+        setMessages(messages.concat(websocketMessage));
     }
 
     if (!isConnected) {
@@ -73,7 +77,7 @@ const ChatPage = () => {
         return (
             <div className="chat">
                 <ChatTopBar username={username} disconnect={disconnect}/>
-                <ChatMessages messages={messages}/>
+                <ChatMessages messages={messages} username={username}/>
                 <ChatFooter sendMessage={sendData}/>
             </div>);
     }

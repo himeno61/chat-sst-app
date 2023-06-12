@@ -1,19 +1,23 @@
 import { WebsocketMessage} from "@chat-sst-app/core/src/messages/message.ts";
+import ChatMessage from "./ChatMessage.tsx";
 
 interface ChatMessagesProps {
     messages: WebsocketMessage[]
+    username: string
 }
 
 const ChatMessages = (props: ChatMessagesProps) => {
-    const {messages} = props;
+    const {messages,username} = props;
+
     return (
         <>
             <div className={"chat-messages-box"}>
-                {messages.map((message) =>
-                    <div id={message.id} className={"chat-message"}>
-                        <p>{message.userName}</p>
-                        <p>{message.message}</p>
-                    </div>
+                {messages.map((message) =>{
+                    return (
+                        <ChatMessage username={username} message={message}/>
+                    );
+                }
+
                 )}
             </div>
         </>
