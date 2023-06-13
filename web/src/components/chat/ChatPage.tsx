@@ -17,8 +17,32 @@ const ChatPage = () => {
     const [isConnected, setIsConnected] = useState(false);
     const lastElementRef = useRef<HTMLDivElement>(null);
 
+    useEffect(() => {
+        return () => {
+            if (ws.readyState === 1) {
+                console.log("closing on exit");
+                ws.close();
+            }
+        };
+    }, []);
 
     useEffect(() => {
+        console.log("state changed");
+        if(ws.readyState === ws.CLOSED || ws.readyState === ws.CLOSING){
+            ws.close();
+            alert("Error with connection occured");
+            navigate("/")
+        }else if(ws.readyState ===ws.CONNECTING){
+            setIsConnected(false);
+        }
+    }, [ws.readyState]);
+
+    useEffect(() => {
+        if (!location.state || username === "") {
+            navigate("/");
+        }
+
+
         ws.onopen = () => {
             console.log("opened");
             setIsConnected(true);
@@ -43,23 +67,10 @@ const ChatPage = () => {
         ws.onerror = () => {
             console.log("error");
             alert("Error with connection occured");
+            ws.close();
             navigate("/")
         }
-        return () => {
-            if (ws.readyState === 1) {
-                ws.close();
-            }
-        };
-    }, [ws]);
 
-    useEffect(() => {
-        console.log("state changed");
-    }, [ws.readyState]);
-
-    useEffect(() => {
-        if (!location.state || username === "") {
-            navigate("/");
-        }
         fetch(messagesApiUrl)
             .then(response => response.text())
             .then((response) => {
@@ -85,6 +96,7 @@ const ChatPage = () => {
 
 
     function disconnect() {
+        console.log("disconnect button")
         ws.close();
         navigate("/");
     }
