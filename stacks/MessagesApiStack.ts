@@ -5,20 +5,24 @@ export function MessagesApiStack({ stack }: StackContext){
     const { database } = use(StorageStack);
 
 
-    const api = new Api(stack, "MessagesApi", {
+    const messagesApi = new Api(stack, "MessagesApi", {
         defaults: {
             function: {
                 bind: [database]
             }
         },
         routes: {
-            "GET /messages": "packages/functions/src/messages/list.handler",
-            "POST /notes": "packages/functions/src/messages/create.handler",
+            "GET /messages": "packages/functions/src/messages/list.main",
+            "POST /messages": "packages/functions/src/messages/create.main",
         },
     });
 
     // Show the API endpoint in the output
     stack.addOutputs({
-        MessagesApiEndpoint: api.url,
+        MessagesApiEndpoint: messagesApi.url,
     });
+
+    return {
+        messagesApi
+    }
 }

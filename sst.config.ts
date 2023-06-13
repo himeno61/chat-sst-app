@@ -12,6 +12,6 @@ export default {
     };
   },
   stacks(app) {
-    app.stack(StorageStack).stack(WebsocketStack).stack(FrontendStack).stack(MessagesApiStack);
+    app.stack(StorageStack).stack(WebsocketStack).stack(MessagesApiStack).stack(FrontendStack);
   }
 } satisfies SSTConfig;

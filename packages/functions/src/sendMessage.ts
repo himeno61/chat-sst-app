@@ -15,14 +15,13 @@ export const main: APIGatewayProxyHandler = async (event) => {
     const apiGateway = new ApiGatewayManagementApi({
         endpoint: `${domainName}/${stage}`,
     });
-    console.log(`data: ${messageData}`);
 
-    //
-    // const messagesCreateResult = await ChatApp.entities.message.create({
-    //     id: messageData.id,
-    //     senderId: messageData.userName,
-    //     message: messageData.message
-    // }).go();
+    const parsedMessage = JSON.parse(messageData);
+    const messagesCreateResult = await ChatApp.entities.message.create({
+        id: parsedMessage.id,
+        senderId: parsedMessage.userName,
+        message: parsedMessage.message
+    }).go();
 
     const postToConnection = async function (connection: ChatConnection) {
         try {
