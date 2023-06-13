@@ -12,43 +12,25 @@ const ChatPage = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const username = location.state.userName;
-    const ws = new WebSocket(wssApiUrl);
+    const ws = useRef<WebSocket|null>(null);
     const [messages, setMessages] = useState<WebsocketMessage[]>([]);
     const [isConnected, setIsConnected] = useState(false);
     const lastElementRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        return () => {
-            if (ws.readyState === 1) {
-                console.log("closing on exit");
-                ws.close();
-            }
-        };
-    }, []);
 
     useEffect(() => {
-        console.log("state changed");
-        if(ws.readyState === ws.CLOSED || ws.readyState === ws.CLOSING){
-            ws.close();
-            alert("Error with connection occured");
-            navigate("/")
-        }else if(ws.readyState ===ws.CONNECTING){
-            setIsConnected(false);
-        }
-    }, [ws.readyState]);
-
-    useEffect(() => {
+        const socket = new WebSocket(wssApiUrl);
         if (!location.state || username === "") {
             navigate("/");
         }
 
 
-        ws.onopen = () => {
+        socket.onopen = () => {
             console.log("opened");
             setIsConnected(true);
         };
 
-        ws.onmessage = (message) => {
+        socket.onmessage = (message) => {
             if (message.data) {
                 const websocketMessage = JSON.parse(message.data) as WebsocketMessage;
                 console.log(`Received message: ${message.data}`);
@@ -64,12 +46,14 @@ const ChatPage = () => {
                 }
             }
         }
-        ws.onerror = () => {
+        socket.onerror = () => {
             console.log("error");
             alert("Error with connection occured");
-            ws.close();
+            socket.close();
             navigate("/")
         }
+
+        ws.current = socket;
 
         fetch(messagesApiUrl)
             .then(response => response.text())
@@ -94,10 +78,9 @@ const ChatPage = () => {
 
     }, []);
 
-
     function disconnect() {
         console.log("disconnect button")
-        ws.close();
+        ws.current?.close();
         navigate("/");
     }
 
@@ -109,7 +92,7 @@ const ChatPage = () => {
         }
         console.log(`message before being send: ${JSON.stringify(websocketMessage)}`);
         setMessages(messages.concat([websocketMessage]));
-        ws.send(getParsedMessage(websocketMessage));
+        ws.current?.send(getParsedMessage(websocketMessage));
     }
 
     if (!isConnected) {
