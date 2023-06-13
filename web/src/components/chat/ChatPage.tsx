@@ -5,22 +5,20 @@ import ChatMessages from "./ChatMessages.tsx";
 import {v4 as uuidv4} from "uuid";
 import ChatTopBar from "./ChatTopBar.tsx";
 import ChatFooter from "./ChatFooter.tsx";
-
+import {messagesApiUrl, wssApiUrl} from "../../config.ts";
+import {Message} from "@chat-sst-app/core/src/database/entities/messages.ts";
 
 const ChatPage = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const username = location.state.userName;
-    const ws = new WebSocket(import.meta.env.VITE_APP_WSS_URL);
+    const ws = new WebSocket(wssApiUrl);
     const [messages, setMessages] = useState<WebsocketMessage[]>([]);
     const [isConnected, setIsConnected] = useState(false);
     const lastElementRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        if (!location.state || username === "") {
-            navigate("/");
-        }
 
+    useEffect(() => {
         ws.onopen = () => {
             console.log("opened");
             setIsConnected(true);
@@ -31,13 +29,12 @@ const ChatPage = () => {
                 const websocketMessage = JSON.parse(message.data) as WebsocketMessage;
                 console.log(`Received message: ${message.data}`);
                 const findResult = messages.find(wsMessage => wsMessage.id === websocketMessage.id);
-                const ids = messages.map(m=> m.id);
+                const ids = messages.map(m => m.id);
                 console.log(`ids of messages: ${ids}`)
                 if (findResult) {
                     console.log(`Item with id: ${websocketMessage.id} already in the table`);
                     return;
-                }
-                else {
+                } else {
                     console.log("else");
                     setMessages(messages.concat([websocketMessage]));
                 }
@@ -55,9 +52,36 @@ const ChatPage = () => {
         };
     }, [ws]);
 
-    useEffect(()=>{
+    useEffect(() => {
         console.log("state changed");
-    },[ws.readyState]);
+    }, [ws.readyState]);
+
+    useEffect(() => {
+        if (!location.state || username === "") {
+            navigate("/");
+        }
+        fetch(messagesApiUrl)
+            .then(response => response.text())
+            .then((response) => {
+                if (response) {
+                    const loadedMessages = JSON.parse(response).data as Message[];
+                    const parsedMessages = loadedMessages.map(m => {
+                        return ({
+                            id: m.id,
+                            userName: m.senderId,
+                            message: m.message
+                        });
+                    });
+                    const diff = parsedMessages.filter(parsedMessage => !messages.some(websocketMessage => {
+                        return parsedMessage.id === websocketMessage.id
+                    }))
+
+                    setMessages(parsedMessages.concat(diff));
+                }
+            })
+            .catch(err => console.log(err))
+
+    }, []);
 
 
     function disconnect() {
