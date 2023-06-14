@@ -15,6 +15,7 @@ const ChatPage = () => {
     const ws = useRef<WebSocket | null>(null);
     const [messages, setMessages] = useState<WebsocketMessage[]>([]);
     const [isConnected, setIsConnected] = useState(false);
+    const isInitialized = useRef(false);
     const lastElementRef = useRef<HTMLDivElement>(null);
 
 
@@ -30,34 +31,46 @@ const ChatPage = () => {
             console.log("else");
             setMessages([...messages, websocketMessage]);
         }
-    };
+    }
+
+    function fetchNewMessages() {
+        console.log("fetching messages");
+        try{
+            fetch(messagesApiUrl)
+                .then(response => response.text())
+                .then((response) => {
+                    if (response) {
+                        const loadedMessages = JSON.parse(response).data as Message[];
+                        const parsedMessages = loadedMessages.map(m => {
+                            return ({
+                                id: m.id,
+                                userName: m.senderId,
+                                message: m.message
+                            });
+                        });
+                        const diff = parsedMessages.filter(parsedMessage => !messages.some(websocketMessage => {
+                            return parsedMessage.id === websocketMessage.id
+                        }))
+                        setMessages(parsedMessages.concat(diff));
+                    }
+                })
+                .catch(err => console.log(err))
+        }catch (e) {
+            console.log(e);
+        }
+    }
 
     useEffect(() => {
         if (!location.state || username === "") {
             navigate("/");
+            return ;
         }
+        if (isInitialized.current) return;
+        isInitialized.current = true;
 
         ws.current = new WebSocket(wssApiUrl);
 
-        fetch(messagesApiUrl)
-            .then(response => response.text())
-            .then((response) => {
-                if (response) {
-                    const loadedMessages = JSON.parse(response).data as Message[];
-                    const parsedMessages = loadedMessages.map(m => {
-                        return ({
-                            id: m.id,
-                            userName: m.senderId,
-                            message: m.message
-                        });
-                    });
-                    const diff = parsedMessages.filter(parsedMessage => !messages.some(websocketMessage => {
-                        return parsedMessage.id === websocketMessage.id
-                    }))
-                    setMessages(parsedMessages.concat(diff));
-                }
-            })
-            .catch(err => console.log(err))
+       fetchNewMessages();
 
         const wsCurrent = ws.current;
 
